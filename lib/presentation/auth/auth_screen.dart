@@ -23,7 +23,7 @@ class AuthScreen extends StatelessWidget {
 }
 
 class _Body extends StatelessWidget {
-  const _Body({super.key});
+  const _Body();
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +51,9 @@ class _Body extends StatelessWidget {
                 if (str == null || str.isEmpty) return 'Заполните поле';
                 return null;
               },
+              onSaved: (username) {
+                context.read<AuthScreenCubit>().setUsername(username!);
+              },
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -68,7 +71,12 @@ class _Body extends StatelessWidget {
                 if (str == null || str.isEmpty) return 'Заполните поле';
                 return null;
               },
+              onSaved: (password) {
+                context.read<AuthScreenCubit>().setPassword(password!);
+              },
             ),
+            const SizedBox(height: 24),
+            const _FailureBlock(),
             const Spacer(),
             BlocBuilder<AuthScreenCubit, AuthScreenState>(
               buildWhen: (prev, curr) => prev.status != curr.status,
@@ -76,8 +84,8 @@ class _Body extends StatelessWidget {
                 return SizedBox(
                   width: 140,
                   height: 52,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
                           Radius.circular(24),
@@ -86,7 +94,13 @@ class _Body extends StatelessWidget {
                     ),
                     onPressed: state.status == AuthScreenStatus.loading
                         ? null
-                        : () => context.read<AuthScreenCubit>().auth(),
+                        : () {
+                            final form = Form.of(context)!;
+                            if (form.validate()) {
+                              form.save();
+                              context.read<AuthScreenCubit>().auth();
+                            }
+                          },
                     child: state.status == AuthScreenStatus.loading
                         ? const CircularProgressIndicator()
                         : Row(
@@ -111,6 +125,47 @@ class _Body extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _FailureBlock extends StatelessWidget {
+  const _FailureBlock();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return BlocBuilder<AuthScreenCubit, AuthScreenState>(
+      buildWhen: (prev, curr) => prev.status != curr.status,
+      builder: (context, state) {
+        return AnimatedSwitcher(
+          duration: kThemeAnimationDuration,
+          child: state.status == AuthScreenStatus.failure
+              ? Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(width: 12),
+                    Icon(
+                      Icons.error,
+                      color: theme.errorColor,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        'Неверно введено имя пользователя или пароль',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.errorColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : const SizedBox.shrink(),
+        );
+      },
     );
   }
 }
