@@ -10,19 +10,21 @@ class App extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         useMaterial3: true,
+        brightness: Brightness.dark,
         appBarTheme: const AppBarTheme(
           color: Colors.transparent,
           systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarIconBrightness: Brightness.dark,
-            statusBarBrightness: Brightness.light,
+            statusBarBrightness: Brightness.dark,
           ),
         ),
         inputDecorationTheme: const InputDecorationTheme(
           filled: false,
-          border: OutlineInputBorder(),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(24))),
         ),
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.red,
+          brightness: Brightness.dark,
         ),
       ),
       initialRoute: '/',
