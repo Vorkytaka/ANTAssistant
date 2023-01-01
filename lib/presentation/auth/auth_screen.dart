@@ -19,7 +19,14 @@ class AuthScreen extends StatelessWidget {
         repository: context.read(),
       ),
       lazy: false,
-      child: screen,
+      child: BlocListener<AuthScreenCubit, AuthScreenState>(
+        listener: (context, state) {
+          if (state.status == AuthScreenStatus.success) {
+            Navigator.of(context).pop();
+          }
+        },
+        child: screen,
+      ),
     );
   }
 }

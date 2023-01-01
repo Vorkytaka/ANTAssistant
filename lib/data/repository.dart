@@ -1,13 +1,18 @@
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 
 final Uri _uri = Uri.parse('http://cabinet.a-n-t.ru/cabinet.php');
 
 class Repository {
   final Client client;
+  final FlutterSecureStorage secureStorage;
 
-  const Repository({required this.client});
+  const Repository({
+    required this.client,
+    required this.secureStorage,
+  });
 
   Future<bool> login(String username, String password) async {
     // Сейчас у нас имеется проблема
@@ -31,6 +36,10 @@ class Repository {
     } catch (e) {
       return false;
     }
+  }
+
+  Future<void> saveCredentials(String username, String password) {
+    return secureStorage.write(key: username, value: password);
   }
 }
 
