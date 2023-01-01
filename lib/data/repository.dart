@@ -8,21 +8,15 @@ final Uri _uri = Uri.parse('http://cabinet.a-n-t.ru/cabinet.php');
 
 class Repository {
   final Client client;
-  final FlutterSecureStorage secureStorage;
+  final CredentialsHolder credentialsHolder;
 
   Repository({
     required this.client,
-    required this.secureStorage,
-  }) {
-    secureStorage.readAll().then(
-        (accounts) => _controller.add(accounts.keys.toList(growable: false)));
-  }
-
-  final StreamController<List<String>> _controller =
-      StreamController.broadcast();
+    required this.credentialsHolder,
+  });
 
   Stream<List<String>> streamAccounts() {
-    return _controller.stream;
+    return credentialsHolder.streamAccounts();
   }
 
   Future<bool> login(String username, String password) async {
@@ -44,7 +38,7 @@ class Repository {
       const codec = Utf8Codec();
       final body = codec.decode(response.bodyBytes);
       final success = body.isNotEmpty;
-      if (success) await secureStorage.write(key: username, value: password);
+      if (success) await credentialsHolder.addAccount(username, password);
       return success;
     } catch (e) {
       return false;
@@ -57,3 +51,30 @@ Map<String, String> _body(String username, String password) => {
       'user_name': username,
       'user_pass': password,
     };
+
+class CredentialsHolder {
+  CredentialsHolder({
+    required this.storage,
+  }) {
+    _pushAccounts();
+  }
+
+  final FlutterSecureStorage storage;
+  final StreamController<List<String>> _controller =
+      StreamController.broadcast();
+
+  Stream<List<String>> streamAccounts() => _controller.stream;
+
+  Future<void> addAccount(
+    String username,
+    String password,
+  ) async {
+    await storage.write(key: username, value: password);
+    await _pushAccounts();
+  }
+
+  Future<void> _pushAccounts() async {
+    storage.readAll().then((credentials) =>
+        _controller.add(credentials.keys.toList(growable: false)));
+  }
+}

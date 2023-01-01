@@ -1,6 +1,7 @@
 import 'package:antassistant/data/repository.dart';
 import 'package:antassistant/domain/accounts/accounts_bloc.dart';
 import 'package:antassistant/presentation/auth/auth_screen.dart';
+import 'package:antassistant/presentation/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,7 +36,8 @@ class App extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => const AuthScreen(),
+          '/': (context) => const MainScreen(),
+          '/auth': (context) => const AuthScreen(),
         },
       ),
     );
@@ -55,7 +57,9 @@ class Dependencies extends StatelessWidget {
     return RepositoryProvider<Repository>(
       create: (context) => Repository(
         client: Client(),
-        secureStorage: const FlutterSecureStorage(),
+        credentialsHolder: CredentialsHolder(
+          storage: const FlutterSecureStorage(),
+        ),
       ),
       child: BlocProvider<AccountsCubit>(
         create: (context) => AccountsCubit(repository: context.read()),
