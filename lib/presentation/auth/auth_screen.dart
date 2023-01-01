@@ -15,7 +15,9 @@ class AuthScreen extends StatelessWidget {
     );
 
     return BlocProvider<AuthScreenCubit>(
-      create: (context) => AuthScreenCubit(),
+      create: (context) => AuthScreenCubit(
+        repository: context.read(),
+      ),
       lazy: false,
       child: screen,
     );

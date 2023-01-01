@@ -1,8 +1,13 @@
+import 'package:antassistant/data/repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthScreenCubit extends Cubit<AuthScreenState> {
-  AuthScreenCubit() : super(const AuthScreenState.init());
+  AuthScreenCubit({
+    required this.repository,
+  }) : super(const AuthScreenState.init());
+
+  final Repository repository;
 
   void setUsername(String username) {
     assert(username.isNotEmpty);
@@ -16,8 +21,12 @@ class AuthScreenCubit extends Cubit<AuthScreenState> {
 
   Future<void> auth() async {
     emit(state.copyWith(status: AuthScreenStatus.loading));
-    await Future.delayed(const Duration(milliseconds: 2000));
-    emit(state.copyWith(status: AuthScreenStatus.failure));
+
+    final result = await repository.login(state.username, state.password);
+
+    emit(state.copyWith(
+      status: result ? AuthScreenStatus.success : AuthScreenStatus.failure,
+    ));
   }
 }
 
