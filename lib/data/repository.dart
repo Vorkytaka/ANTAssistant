@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,10 +10,20 @@ class Repository {
   final Client client;
   final FlutterSecureStorage secureStorage;
 
-  const Repository({
+  Repository({
     required this.client,
     required this.secureStorage,
-  });
+  }) {
+    secureStorage.readAll().then(
+        (accounts) => _controller.add(accounts.keys.toList(growable: false)));
+  }
+
+  final StreamController<List<String>> _controller =
+      StreamController.broadcast();
+
+  Stream<List<String>> streamAccounts() {
+    return _controller.stream;
+  }
 
   Future<bool> login(String username, String password) async {
     // Сейчас у нас имеется проблема

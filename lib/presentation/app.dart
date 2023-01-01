@@ -1,4 +1,5 @@
 import 'package:antassistant/data/repository.dart';
+import 'package:antassistant/domain/accounts/accounts_bloc.dart';
 import 'package:antassistant/presentation/auth/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,7 +57,11 @@ class Dependencies extends StatelessWidget {
         client: Client(),
         secureStorage: const FlutterSecureStorage(),
       ),
-      child: child,
+      child: BlocProvider<AccountsCubit>(
+        create: (context) => AccountsCubit(repository: context.read()),
+        lazy: false,
+        child: child,
+      ),
     );
   }
 }
