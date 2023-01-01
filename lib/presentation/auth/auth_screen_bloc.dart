@@ -24,10 +24,6 @@ class AuthScreenCubit extends Cubit<AuthScreenState> {
 
     final result = await repository.login(state.username, state.password);
 
-    if (result) {
-      await repository.saveCredentials(state.username, state.password);
-    }
-
     emit(state.copyWith(
       status: result ? AuthScreenStatus.success : AuthScreenStatus.failure,
     ));

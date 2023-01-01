@@ -32,14 +32,12 @@ class Repository {
       );
       const codec = Utf8Codec();
       final body = codec.decode(response.bodyBytes);
-      return body.isNotEmpty;
+      final success = body.isNotEmpty;
+      if (success) await secureStorage.write(key: username, value: password);
+      return success;
     } catch (e) {
       return false;
     }
-  }
-
-  Future<void> saveCredentials(String username, String password) {
-    return secureStorage.write(key: username, value: password);
   }
 }
 
