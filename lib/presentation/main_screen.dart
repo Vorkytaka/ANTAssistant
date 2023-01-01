@@ -7,11 +7,12 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AccountsCubit, List<String>>(
+    return BlocBuilder<AccountsCubit, AccountsState>(
       builder: (context, state) {
-        if (state.isEmpty) {
+        final accounts = state.accounts;
+        if (accounts.isEmpty) {
           return const WelcomeScreen();
-        } else if (state.length == 1) {
+        } else if (accounts.length == 1) {
           return const AccountScreen();
         } else {
           return const AccountListScreen();
@@ -79,7 +80,30 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return BlocBuilder<AccountsCubit, AccountsState>(
+      builder: (context, state) {
+        assert(state.accounts.length == 1);
+        final account = state.accounts.first;
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(account),
+            actions: [
+              PopupMenuButton(
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    child: ListTile(
+                      title: Text('Выйти'),
+                      leading: Icon(Icons.logout_outlined),
+                      dense: true,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -88,6 +112,20 @@ class AccountListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: AppBar(),
+      body: BlocBuilder<AccountsCubit, AccountsState>(
+        builder: (context, state) {
+          return ListView.builder(
+            itemCount: state.accounts.length,
+            itemBuilder: (context, i) {
+              return ListTile(
+                title: Text(state.accounts[i]),
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 }

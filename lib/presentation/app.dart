@@ -33,6 +33,11 @@ class App extends StatelessWidget {
             seedColor: Colors.red,
             brightness: Brightness.dark,
           ),
+          popupMenuTheme: const PopupMenuThemeData(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+            ),
+          ),
         ),
         initialRoute: '/',
         routes: {
