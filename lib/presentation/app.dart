@@ -41,6 +41,32 @@ class App extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(12)),
             ),
           ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+              minimumSize: const Size.fromHeight(52),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(24),
+                ),
+              ),
+              textStyle: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size.fromHeight(52),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(24),
+                ),
+              ),
+              textStyle: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ),
         ),
         initialRoute: '/',
         routes: {
@@ -49,9 +75,9 @@ class App extends StatelessWidget {
         },
         onGenerateRoute: (settings) {
           if (settings.name == '/detailed') {
-            final username = settings.arguments as String;
+            final position = settings.arguments as int;
             return MaterialPageRoute(
-              builder: (context) => AccountDetailedScreen(username: username),
+              builder: (context) => AccountScreen(position: position),
             );
           }
         },

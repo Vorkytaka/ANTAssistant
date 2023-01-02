@@ -64,6 +64,9 @@ class Repository {
       return null;
     }
   }
+
+  Future<void> deleteAccount(String username) =>
+      credentialsHolder.deleteAccount(username);
 }
 
 AccountData _parseUserData(Document document) {
@@ -198,4 +201,9 @@ class CredentialsHolder {
   }
 
   Future<String?> getPassword(String username) => storage.read(key: username);
+
+  Future<void> deleteAccount(String username) async {
+    await storage.delete(key: username);
+    await _pushAccounts();
+  }
 }

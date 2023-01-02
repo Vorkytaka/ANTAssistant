@@ -1,3 +1,4 @@
+import 'package:antassistant/data/repository.dart';
 import 'package:antassistant/domain/account_data.dart';
 import 'package:antassistant/domain/accounts/accounts_bloc.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class MainScreen extends StatelessWidget {
         if (accounts.isEmpty) {
           return const WelcomeScreen();
         } else if (accounts.length == 1) {
-          return const AccountScreen();
+          return const AccountScreen(position: 0);
         } else {
           return const AccountListScreen();
         }
@@ -29,47 +30,46 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
 
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text.rich(
-                const TextSpan(
-                  children: [
-                    TextSpan(text: 'Добро пожаловать в '),
-                    TextSpan(
-                        text: 'ANTAssistant',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                ),
-                style: theme.textTheme.displaySmall,
+      resizeToAvoidBottomInset: false,
+      body: Padding(
+        padding: EdgeInsets.only(
+          left: 32,
+          right: 32,
+          top: 32 + mediaQuery.viewPadding.top,
+          bottom: 32 + mediaQuery.viewPadding.bottom,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text.rich(
+              const TextSpan(
+                children: [
+                  TextSpan(text: 'Добро пожаловать в '),
+                  TextSpan(
+                      text: 'ANTAssistant',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ],
               ),
-              const Spacer(),
-              SizedBox(
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('/auth');
-                  },
-                  child: const Text('Войти'),
-                ),
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                height: 56,
-                child: OutlinedButton(
-                  onPressed: () {},
-                  child: const Text('Звонок в службу поддержки'),
-                ),
-              )
-            ],
-          ),
+              style: theme.textTheme.displaySmall,
+            ),
+            const Spacer(),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/auth');
+              },
+              child: const Text('Войти'),
+            ),
+            const SizedBox(height: 16),
+            OutlinedButton(
+              onPressed: () {},
+              child: const Text('Звонок в службу поддержки'),
+            )
+          ],
         ),
       ),
     );
@@ -82,14 +82,18 @@ enum AccountScreenActions {
 }
 
 class AccountScreen extends StatelessWidget {
-  const AccountScreen({super.key});
+  final int position;
+
+  const AccountScreen({
+    super.key,
+    required this.position,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocSelector<AccountsCubit, AccountsState, AccountState>(
       selector: (state) {
-        assert(state.states.length == 1);
-        return state.states.first;
+        return state.states[position];
       },
       builder: (context, state) {
         return Scaffold(
@@ -130,7 +134,7 @@ class AccountScreen extends StatelessWidget {
                       Navigator.of(context).pushNamed('/auth');
                       break;
                     case AccountScreenActions.exit:
-                      // TODO: Handle this case.
+                      removeAccount(context: context, username: state.username);
                       break;
                   }
                 },
@@ -144,8 +148,7 @@ class AccountScreen extends StatelessWidget {
             children: [
               BlocSelector<AccountsCubit, AccountsState, AccountStatus>(
                 selector: (state) {
-                  assert(state.states.length == 1);
-                  return state.states.first.status;
+                  return state.states[position].status;
                 },
                 builder: (context, status) {
                   switch (status) {
@@ -159,8 +162,7 @@ class AccountScreen extends StatelessWidget {
               Expanded(
                 child: BlocSelector<AccountsCubit, AccountsState, AccountData?>(
                   selector: (state) {
-                    assert(state.states.length == 1);
-                    return state.states.first.data;
+                    return state.states[position].data;
                   },
                   builder: (context, data) {
                     if (data == null) {
@@ -243,6 +245,29 @@ class AccountScreen extends StatelessWidget {
                           subtitle: Text('Статус учетной записи'),
                           leading: Icon(Icons.account_circle_outlined),
                         ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: ListTile(
+                                title:
+                                    Text(data.tariff.price.toStringAsFixed(1)),
+                                subtitle: Text('Цена за месяц'),
+                                leading: Icon(Icons.paid_outlined),
+                              ),
+                            ),
+                            Expanded(
+                              child: ListTile(
+                                title: Text(
+                                    data.tariff.pricePerDay.toStringAsFixed(1)),
+                                subtitle: Text('Цена за день'),
+                                leading: Icon(Icons.attach_money_outlined),
+                              ),
+                            ),
+                          ],
+                        ),
                         ListTile(
                           title: Text('${data.downloaded.toInt()} Мб.'),
                           subtitle: Text('Скачано за текущий месяц'),
@@ -284,6 +309,20 @@ class AccountScreen extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+Future<void> removeAccount({
+  required BuildContext context,
+  required String username,
+}) async {
+  final shouldRemove = await exitDialog(context: context);
+  if ((shouldRemove ?? false)) {
+    await context.read<Repository>().deleteAccount(username);
+    final navigator = Navigator.of(context);
+    if (navigator.canPop()) {
+      navigator.pop();
+    }
   }
 }
 
@@ -348,7 +387,7 @@ class AccountListScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.of(context).pushNamed(
                           '/detailed',
-                          arguments: current.username,
+                          arguments: i,
                         );
                       },
                       title: Text(current.username),
@@ -368,20 +407,22 @@ class AccountListScreen extends StatelessWidget {
   }
 }
 
-class AccountDetailedScreen extends StatelessWidget {
-  final String username;
-
-  const AccountDetailedScreen({
-    super.key,
-    required this.username,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(username),
+Future<bool?> exitDialog({required BuildContext context}) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Выход'),
+        content: Text(
+          'Вы точно хотите выйти?\n\nВы можете добавить несколько аккаунтов одновременно.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Отмена'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('Выход'),
+          ),
+        ],
       ),
     );
-  }
-}

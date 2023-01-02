@@ -92,15 +92,7 @@ class _Body extends StatelessWidget {
               builder: (context, state) {
                 return SizedBox(
                   width: 140,
-                  height: 52,
                   child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(24),
-                        ),
-                      ),
-                    ),
                     onPressed: state.status == AuthScreenStatus.loading
                         ? null
                         : () {
@@ -116,10 +108,7 @@ class _Body extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: const [
                               SizedBox(width: 6),
-                              Text(
-                                'Войти',
-                                style: TextStyle(fontSize: 16),
-                              ),
+                              Text('Войти'),
                               SizedBox(width: 8),
                               Icon(
                                 Icons.navigate_next,
