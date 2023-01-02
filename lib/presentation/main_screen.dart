@@ -345,7 +345,12 @@ class AccountListScreen extends StatelessWidget {
                     }
 
                     return ListTile(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pushNamed(
+                          '/detailed',
+                          arguments: current.username,
+                        );
+                      },
                       title: Text(current.username),
                       subtitle: Text(subtitle),
                       trailing: data != null
@@ -358,6 +363,24 @@ class AccountListScreen extends StatelessWidget {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class AccountDetailedScreen extends StatelessWidget {
+  final String username;
+
+  const AccountDetailedScreen({
+    super.key,
+    required this.username,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(username),
       ),
     );
   }

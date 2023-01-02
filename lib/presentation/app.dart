@@ -22,6 +22,8 @@ class App extends StatelessWidget {
             color: Colors.transparent,
             systemOverlayStyle: SystemUiOverlayStyle(
               statusBarBrightness: Brightness.dark,
+              statusBarIconBrightness: Brightness.light,
+              statusBarColor: Colors.transparent,
             ),
             scrolledUnderElevation: 0,
           ),
@@ -44,6 +46,24 @@ class App extends StatelessWidget {
         routes: {
           '/': (context) => const MainScreen(),
           '/auth': (context) => const AuthScreen(),
+        },
+        onGenerateRoute: (settings) {
+          if (settings.name == '/detailed') {
+            final username = settings.arguments as String;
+            return MaterialPageRoute(
+              builder: (context) => AccountDetailedScreen(username: username),
+            );
+          }
+        },
+        builder: (context, child) {
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle(
+              systemNavigationBarColor: Colors.grey.shade900,
+              systemNavigationBarIconBrightness: Brightness.light,
+              systemNavigationBarDividerColor: Colors.grey.shade900,
+            ),
+            child: child!,
+          );
         },
       ),
     );
