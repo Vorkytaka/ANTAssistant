@@ -293,14 +293,26 @@ class AccountListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('Аккаунты'),
+      ),
       body: BlocBuilder<AccountsCubit, AccountsState>(
         builder: (context, state) {
           return ListView.builder(
+            physics: const ScrollPhysics(),
             itemCount: state.states.length,
             itemBuilder: (context, i) {
+              final current = state.states[i];
+              final data = current.data;
               return ListTile(
-                title: Text(state.states[i].username),
+                onTap: () {},
+                title: Text(current.username),
+                subtitle: data != null
+                    ? Text('Дней осталось: ${data.daysLeft}')
+                    : const Text('Не удалось загрузить данные'),
+                trailing: data != null
+                    ? Text('${data!.balance} Р')
+                    : const SizedBox.shrink(),
               );
             },
           );
