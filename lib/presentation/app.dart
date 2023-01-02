@@ -23,6 +23,7 @@ class App extends StatelessWidget {
             systemOverlayStyle: SystemUiOverlayStyle(
               statusBarBrightness: Brightness.dark,
             ),
+            scrolledUnderElevation: 0,
           ),
           inputDecorationTheme: const InputDecorationTheme(
             filled: false,
