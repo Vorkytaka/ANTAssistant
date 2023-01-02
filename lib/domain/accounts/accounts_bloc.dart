@@ -1,17 +1,19 @@
 import 'dart:async';
 
 import 'package:antassistant/data/repository.dart';
-import 'package:either_dart/either.dart';
+import 'package:antassistant/domain/account_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AccountsCubit extends Cubit<AccountsState> {
+  final Repository repository;
   StreamSubscription? _subscription;
 
   AccountsCubit({
-    required Repository repository,
+    required this.repository,
   }) : super(const AccountsState.init()) {
     _subscription = repository.streamAccounts().listen((event) {
       emit(state.copyWith(accounts: event));
+      updateAll();
     });
   }
 
@@ -20,11 +22,19 @@ class AccountsCubit extends Cubit<AccountsState> {
     await _subscription?.cancel();
     return super.close();
   }
+
+  Future<void> updateAll() async {
+    final data = <String, AccountData?>{};
+    for (final username in state.accounts) {
+      data[username] = await repository.getData(username);
+    }
+    emit(state.copyWith(data: data));
+  }
 }
 
 class AccountsState {
   final List<String> accounts;
-  final Map<String, Either<Exception?, String>> data;
+  final Map<String, AccountData?> data;
 
   const AccountsState({
     required this.accounts,
@@ -37,7 +47,7 @@ class AccountsState {
 
   AccountsState copyWith({
     List<String>? accounts,
-    Map<String, Either<Exception?, String>>? data,
+    Map<String, AccountData?>? data,
   }) =>
       AccountsState(
         accounts: accounts ?? this.accounts,
