@@ -1,5 +1,6 @@
 import 'package:antassistant/data/repository.dart';
 import 'package:antassistant/domain/accounts/accounts_bloc.dart';
+import 'package:antassistant/presentation/account_screen.dart';
 import 'package:antassistant/presentation/auth/auth_screen.dart';
 import 'package:antassistant/presentation/main_screen.dart';
 import 'package:flutter/material.dart';
