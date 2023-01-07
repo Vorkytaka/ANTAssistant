@@ -1,4 +1,6 @@
+import 'package:antassistant/presentation/common.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -34,17 +36,19 @@ class WelcomeScreen extends StatelessWidget {
               style: theme.textTheme.displaySmall,
             ),
             const Spacer(),
-            ElevatedButton(
+            OutlinedButton(
               onPressed: () {
                 Navigator.of(context).pushNamed('/auth');
               },
               child: const Text('Войти'),
             ),
             const SizedBox(height: 16),
-            OutlinedButton(
-              onPressed: () {},
-              child: const Text('Звонок в службу поддержки'),
-            )
+            CanPhoneBuilder(
+              builder: (context) => TextButton(
+                onPressed: () => launchUrl(antPhoneUri),
+                child: const Text('Звонок в службу поддержки'),
+              ),
+            ),
           ],
         ),
       ),

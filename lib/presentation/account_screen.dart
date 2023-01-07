@@ -1,6 +1,6 @@
 import 'package:antassistant/data/repository.dart';
-import 'package:antassistant/domain/account_data.dart';
 import 'package:antassistant/domain/accounts/accounts_bloc.dart';
+import 'package:antassistant/presentation/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,10 +57,8 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<AccountsCubit, AccountsState, AccountState>(
-      selector: (state) {
-        return state.states[position];
-      },
+    return AccountStateBuilder(
+      position: position,
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -112,12 +110,10 @@ class AccountScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BlocSelector<AccountsCubit, AccountsState, AccountStatus>(
-                selector: (state) {
-                  return state.states[position].status;
-                },
-                builder: (context, status) {
-                  switch (status) {
+              AccountStateBuilder(
+                position: position,
+                builder: (context, state) {
+                  switch (state.status) {
                     case AccountStatus.loading:
                       return const LinearProgressIndicator(minHeight: 4);
                     default:
@@ -126,11 +122,10 @@ class AccountScreen extends StatelessWidget {
                 },
               ),
               Expanded(
-                child: BlocSelector<AccountsCubit, AccountsState, AccountData?>(
-                  selector: (state) {
-                    return state.states[position].data;
-                  },
-                  builder: (context, data) {
+                child: AccountStateBuilder(
+                  position: position,
+                  builder: (context, state) {
+                    final data = state.data;
                     if (data == null) {
                       // todo: handle this case
                       return const SizedBox.shrink();
