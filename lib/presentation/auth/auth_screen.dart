@@ -38,89 +38,98 @@ class _Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: Form(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Имя пользователя',
-                prefixIcon: Icon(Icons.account_circle_outlined),
+      child: AutofillGroup(
+        child: Form(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Имя пользователя',
+                  prefixIcon: Icon(Icons.account_circle_outlined),
+                ),
+                autofocus: true,
+                textInputAction: TextInputAction.next,
+                textCapitalization: TextCapitalization.none,
+                keyboardType: TextInputType.text,
+                minLines: 1,
+                maxLines: 1,
+                obscureText: false,
+                validator: (str) {
+                  if (str == null || str.isEmpty) return 'Заполните поле';
+                  return null;
+                },
+                onSaved: (username) {
+                  context.read<AuthScreenCubit>().setUsername(username!);
+                },
+                autofillHints: const [
+                  AutofillHints.username,
+                  AutofillHints.name,
+                ],
               ),
-              autofocus: true,
-              textInputAction: TextInputAction.next,
-              textCapitalization: TextCapitalization.none,
-              keyboardType: TextInputType.text,
-              minLines: 1,
-              maxLines: 1,
-              obscureText: false,
-              validator: (str) {
-                if (str == null || str.isEmpty) return 'Заполните поле';
-                return null;
-              },
-              onSaved: (username) {
-                context.read<AuthScreenCubit>().setUsername(username!);
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Пароль',
-                prefixIcon: Icon(Icons.lock_outline),
+              const SizedBox(height: 16),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Пароль',
+                  prefixIcon: Icon(Icons.lock_outline),
+                ),
+                textInputAction: TextInputAction.done,
+                textCapitalization: TextCapitalization.none,
+                keyboardType: TextInputType.text,
+                minLines: 1,
+                maxLines: 1,
+                obscureText: true,
+                validator: (str) {
+                  if (str == null || str.isEmpty) return 'Заполните поле';
+                  return null;
+                },
+                onSaved: (password) {
+                  context.read<AuthScreenCubit>().setPassword(password!);
+                },
+                autofillHints: const [
+                  AutofillHints.password,
+                ],
               ),
-              textInputAction: TextInputAction.done,
-              textCapitalization: TextCapitalization.none,
-              keyboardType: TextInputType.text,
-              minLines: 1,
-              maxLines: 1,
-              obscureText: true,
-              validator: (str) {
-                if (str == null || str.isEmpty) return 'Заполните поле';
-                return null;
-              },
-              onSaved: (password) {
-                context.read<AuthScreenCubit>().setPassword(password!);
-              },
-            ),
-            const SizedBox(height: 24),
-            const _FailureBlock(),
-            const Spacer(),
-            BlocBuilder<AuthScreenCubit, AuthScreenState>(
-              buildWhen: (prev, curr) => prev.status != curr.status,
-              builder: (context, state) {
-                return SizedBox(
-                  width: 140,
-                  child: OutlinedButton(
-                    onPressed: state.status == AuthScreenStatus.loading
-                        ? null
-                        : () {
-                            final form = Form.of(context)!;
-                            if (form.validate()) {
-                              form.save();
-                              context.read<AuthScreenCubit>().auth();
-                            }
-                          },
-                    child: state.status == AuthScreenStatus.loading
-                        ? const CircularProgressIndicator()
-                        : Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              SizedBox(width: 6),
-                              Text('Войти'),
-                              SizedBox(width: 8),
-                              Icon(
-                                Icons.navigate_next,
-                                size: 28,
-                              ),
-                            ],
-                          ),
-                  ),
-                );
-              },
-            ),
-          ],
+              const SizedBox(height: 24),
+              const _FailureBlock(),
+              const Spacer(),
+              BlocBuilder<AuthScreenCubit, AuthScreenState>(
+                buildWhen: (prev, curr) => prev.status != curr.status,
+                builder: (context, state) {
+                  return SizedBox(
+                    width: 140,
+                    child: OutlinedButton(
+                      onPressed: state.status == AuthScreenStatus.loading
+                          ? null
+                          : () {
+                              final form = Form.of(context)!;
+                              if (form.validate()) {
+                                form.save();
+                                context.read<AuthScreenCubit>().auth();
+                              }
+                            },
+                      child: state.status == AuthScreenStatus.loading
+                          ? const CircularProgressIndicator()
+                          : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: const [
+                                SizedBox(width: 6),
+                                Text('Войти'),
+                                SizedBox(width: 8),
+                                Icon(
+                                  Icons.navigate_next,
+                                  size: 28,
+                                ),
+                              ],
+                            ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

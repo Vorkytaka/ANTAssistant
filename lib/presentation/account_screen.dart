@@ -2,6 +2,7 @@ import 'package:antassistant/data/repository.dart';
 import 'package:antassistant/domain/account_data.dart';
 import 'package:antassistant/domain/accounts/accounts_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum AccountScreenActions {
@@ -23,7 +24,10 @@ Future<void> removeAccount({
   }
 }
 
-Future<bool?> exitDialog({required BuildContext context}) => showDialog(
+Future<bool?> exitDialog({
+  required BuildContext context,
+}) =>
+    showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Выход'),
@@ -144,7 +148,7 @@ class AccountScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${data.balance}',
+                          '${data.balance} ₽',
                           textAlign: TextAlign.center,
                           style: theme.textTheme.headlineMedium,
                         ),
@@ -201,6 +205,26 @@ class AccountScreen extends StatelessWidget {
                           title: Text(data.number),
                           subtitle: Text('Код плательщика'),
                           leading: Icon(Icons.tag_outlined),
+                          trailing: IconButton(
+                            icon: Icon(Icons.copy_outlined),
+                            onPressed: () {
+                              Clipboard.setData(
+                                ClipboardData(text: data.number),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Код плательщика скопирован',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  behavior: SnackBarBehavior.floating,
+                                  dismissDirection: DismissDirection.horizontal,
+                                ),
+                              );
+                            },
+                          ),
                         ),
                         ListTile(
                           title: Text(data.status),
@@ -214,8 +238,9 @@ class AccountScreen extends StatelessWidget {
                           children: [
                             Expanded(
                               child: ListTile(
-                                title:
-                                    Text(data.tariff.price.toStringAsFixed(1)),
+                                title: Text(
+                                  '${data.tariff.price.toStringAsFixed(1)} ₽',
+                                ),
                                 subtitle: Text('Цена за месяц'),
                                 leading: Icon(Icons.paid_outlined),
                               ),
@@ -223,7 +248,8 @@ class AccountScreen extends StatelessWidget {
                             Expanded(
                               child: ListTile(
                                 title: Text(
-                                    data.tariff.pricePerDay.toStringAsFixed(1)),
+                                  '${data.tariff.pricePerDay.toStringAsFixed(1)} ₽',
+                                ),
                                 subtitle: Text('Цена за день'),
                                 leading: Icon(Icons.attach_money_outlined),
                               ),
