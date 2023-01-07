@@ -22,6 +22,7 @@ class App extends StatelessWidget {
           brightness: Brightness.dark,
           appBarTheme: const AppBarTheme(
             color: Colors.transparent,
+            centerTitle: true,
             systemOverlayStyle: SystemUiOverlayStyle(
               statusBarBrightness: Brightness.dark,
               statusBarIconBrightness: Brightness.light,
