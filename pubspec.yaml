@@ -21,6 +21,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.11.0
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "icon/antassistant-icon.png"
+  image_path_android: "icon/antassistant-icon-foreground.png"
 
 flutter:
   uses-material-design: true
