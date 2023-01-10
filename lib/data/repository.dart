@@ -23,6 +23,12 @@ class Repository {
   }
 
   Future<bool> login(String username, String password) async {
+    // We need this to test our app
+    if (username.startsWith('test_') && password == 'qwerty') {
+      await credentialsHolder.addAccount(username, password);
+      return Future.delayed(const Duration(seconds: 1), () => true);
+    }
+
     // Сейчас у нас имеется проблема
     // По какой-то причине, статус ответа 302 не считается редиректом.
     //
@@ -49,6 +55,29 @@ class Repository {
   }
 
   Future<AccountData?> getData(String username) async {
+    // We need this to test our app
+    if (username.startsWith('test_')) {
+      return Future.delayed(
+        const Duration(seconds: 1),
+        () => AccountData(
+          balance: 990.0,
+          name: username,
+          status: 'Активна',
+          number: '2000000001',
+          downloaded: 20041994,
+          tariff: const Tariff(
+            name: 'IX-SUPER-PUPER',
+            price: 780,
+            downloadSpeed: '1 Гбит/с',
+            uploadSpeed: '1 Гбит/с',
+          ),
+          credit: 0,
+          dynDns: 'test.dyn-dns.a-n-t.ru',
+          smsInfo: 'Отключено',
+        ),
+      );
+    }
+
     try {
       final password = await credentialsHolder.getPassword(username);
       final response = await client.post(
