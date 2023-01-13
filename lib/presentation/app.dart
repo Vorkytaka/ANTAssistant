@@ -28,7 +28,7 @@ class App extends StatelessWidget {
               statusBarIconBrightness: Brightness.light,
               statusBarColor: Colors.transparent,
             ),
-            scrolledUnderElevation: 0,
+            // scrolledUnderElevation: 0,
           ),
           inputDecorationTheme: const InputDecorationTheme(
             filled: false,
