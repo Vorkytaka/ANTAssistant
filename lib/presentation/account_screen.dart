@@ -133,72 +133,95 @@ class AccountScreen extends StatelessWidget {
 
                     final theme = Theme.of(context);
                     return ListView(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 16,
+                      ),
                       physics: const ScrollPhysics(),
                       children: [
-                        Text(
-                          'Баланс',
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${data.balance} ₽',
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.headlineMedium,
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Дней осталось',
-                                    textAlign: TextAlign.center,
-                                    style: theme.textTheme.titleSmall,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    '${data.daysLeft}',
-                                    textAlign: TextAlign.center,
-                                    style: theme.textTheme.titleLarge,
-                                  ),
-                                ],
-                              ),
+                        Material(
+                          color: theme.colorScheme.surface,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(16),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Баланс',
+                                  textAlign: TextAlign.center,
+                                  style: theme.textTheme.titleLarge,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${data.balance} ₽',
+                                  textAlign: TextAlign.center,
+                                  style: theme.textTheme.headlineMedium,
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Дней осталось',
+                                            textAlign: TextAlign.center,
+                                            style: theme.textTheme.titleSmall,
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            '${data.daysLeft}',
+                                            textAlign: TextAlign.center,
+                                            style: theme.textTheme.titleLarge,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Кредит доверия',
+                                            textAlign: TextAlign.center,
+                                            style: theme.textTheme.titleSmall,
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            '${data.credit}',
+                                            textAlign: TextAlign.center,
+                                            style: theme.textTheme.titleLarge,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Кредит доверия',
-                                    textAlign: TextAlign.center,
-                                    style: theme.textTheme.titleSmall,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    '${data.credit}',
-                                    textAlign: TextAlign.center,
-                                    style: theme.textTheme.titleLarge,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                         const SizedBox(height: 8),
-                        ListTile(
-                          title: Text(data.number),
-                          subtitle: Text('Код плательщика'),
+                        ListItem(
+                          value: Text(data.number),
+                          title: Text('Код плательщика'),
                           leading: Icon(Icons.tag_outlined),
                           trailing: IconButton(
                             icon: Icon(Icons.copy_outlined),
@@ -221,62 +244,69 @@ class AccountScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                        ListTile(
-                          title: Text(data.status),
-                          subtitle: Text('Статус учетной записи'),
+                        const SizedBox(height: 8),
+                        ListItem(
+                          value: Text(data.status),
+                          title: Text('Статус учетной записи'),
                           leading: Icon(Icons.account_circle_outlined),
                         ),
+                        const SizedBox(height: 8),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                              child: ListTile(
-                                title: Text(
+                              child: ListItem(
+                                value: Text(
                                   '${data.tariff.price.toStringAsFixed(1)} ₽',
                                 ),
-                                subtitle: Text('Цена за месяц'),
+                                title: Text('Цена за месяц'),
                                 leading: Icon(Icons.paid_outlined),
                               ),
                             ),
+                            const SizedBox(width: 8),
                             Expanded(
-                              child: ListTile(
-                                title: Text(
+                              child: ListItem(
+                                value: Text(
                                   '${data.tariff.pricePerDay.toStringAsFixed(1)} ₽',
                                 ),
-                                subtitle: Text('Цена за день'),
+                                title: Text('Цена за день'),
                                 leading: Icon(Icons.attach_money_outlined),
                               ),
                             ),
                           ],
                         ),
-                        ListTile(
-                          title: Text('${data.downloaded.toInt()} Мб.'),
-                          subtitle: Text('Скачано за текущий месяц'),
+                        const SizedBox(height: 8),
+                        ListItem(
+                          value: Text('${data.downloaded.toInt()} Мб.'),
+                          title: Text('Скачано за текущий месяц'),
                           leading: Icon(Icons.downloading_outlined),
                         ),
-                        ListTile(
-                          title: Text(data.tariff.name),
-                          subtitle: Text('Название тарифа'),
+                        const SizedBox(height: 8),
+                        ListItem(
+                          value: Text(data.tariff.name),
+                          title: Text('Название тарифа'),
                           leading: Icon(Icons.manage_accounts_outlined),
                         ),
+                        const SizedBox(height: 8),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                              child: ListTile(
-                                title: Text(data.tariff.downloadSpeed),
-                                subtitle: Text('Скорость загрузки'),
+                              child: ListItem(
+                                value: Text(data.tariff.downloadSpeed),
+                                title: Text('Скорость загрузки'),
                                 leading: Icon(Icons.download_outlined),
                               ),
                             ),
+                            const SizedBox(width: 8),
                             Expanded(
-                              child: ListTile(
-                                title: Text(data.tariff.uploadSpeed),
-                                subtitle: Text('Скорость отдачи'),
+                              child: ListItem(
+                                value: Text(data.tariff.uploadSpeed),
+                                title: Text('Скорость отдачи'),
                                 leading: Icon(Icons.upload_outlined),
                               ),
                             ),
@@ -291,6 +321,67 @@ class AccountScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class ListItem extends StatelessWidget {
+  final Widget? leading;
+  final Widget? title;
+  final Widget value;
+  final Widget? trailing;
+
+  const ListItem({
+    super.key,
+    this.leading,
+    this.title,
+    required this.value,
+    this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: theme.colorScheme.surface,
+      borderRadius: const BorderRadius.all(
+        Radius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (leading != null) ...[
+              leading!,
+              const SizedBox(width: 16),
+            ],
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (title != null) ...[
+                    DefaultTextStyle(
+                      style: theme.textTheme.bodyMedium!,
+                      child: title!,
+                    ),
+                    const SizedBox(height: 4),
+                  ],
+                  DefaultTextStyle(
+                    style: theme.textTheme.titleMedium!,
+                    child: value,
+                  ),
+                ],
+              ),
+            ),
+            if (trailing != null) trailing!,
+          ],
+        ),
+      ),
     );
   }
 }
