@@ -28,16 +28,20 @@ class App extends StatelessWidget {
               statusBarIconBrightness: Brightness.light,
               statusBarColor: Colors.transparent,
             ),
-            scrolledUnderElevation: 0,
+            // scrolledUnderElevation: 0,
           ),
           inputDecorationTheme: const InputDecorationTheme(
             filled: false,
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(24))),
+              borderRadius: BorderRadius.all(
+                Radius.circular(24),
+              ),
+            ),
           ),
           colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.red,
             brightness: Brightness.dark,
+            surface: Colors.grey[800],
           ),
           popupMenuTheme: const PopupMenuThemeData(
             shape: RoundedRectangleBorder(

@@ -148,27 +148,45 @@ class _FailureBlock extends StatelessWidget {
         return AnimatedSwitcher(
           duration: kThemeAnimationDuration,
           child: state.status == AuthScreenStatus.failure
-              ? Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(width: 12),
-                    Icon(
-                      Icons.error,
-                      color: theme.errorColor,
+              ? Material(
+                  color: Colors.grey.shade900,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(24),
+                  ),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minHeight: 52,
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        'Неверно введено имя пользователя или пароль',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: theme.errorColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        top: 8,
+                        bottom: 8,
+                        right: 16,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(width: 12),
+                          Icon(
+                            Icons.error,
+                            color: theme.errorColor,
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              'Неверно введено имя пользователя или пароль',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: theme.errorColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 )
               : const SizedBox.shrink(),
         );
