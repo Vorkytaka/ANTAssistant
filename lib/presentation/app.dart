@@ -4,6 +4,7 @@ import 'package:antassistant/domain/accounts/accounts_bloc.dart';
 import 'package:antassistant/presentation/account_screen.dart';
 import 'package:antassistant/presentation/auth/auth_screen.dart';
 import 'package:antassistant/presentation/main_screen.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,86 +17,94 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dependencies(
-      child: MaterialApp(
-        theme: ThemeData(
-          useMaterial3: true,
-          brightness: Brightness.dark,
-          appBarTheme: const AppBarTheme(
-            color: Colors.transparent,
-            centerTitle: true,
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarBrightness: Brightness.dark,
-              statusBarIconBrightness: Brightness.light,
-              statusBarColor: Colors.transparent,
-            ),
-            // scrolledUnderElevation: 0,
-          ),
-          inputDecorationTheme: const InputDecorationTheme(
-            filled: false,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(24),
+      child: DynamicColorBuilder(
+        builder: (ColorScheme? light, ColorScheme? dark) {
+          return MaterialApp(
+            theme: ThemeData(
+              useMaterial3: true,
+              brightness: Brightness.dark,
+              appBarTheme: const AppBarTheme(
+                color: Colors.transparent,
+                centerTitle: true,
+                systemOverlayStyle: SystemUiOverlayStyle(
+                  statusBarBrightness: Brightness.dark,
+                  statusBarIconBrightness: Brightness.light,
+                  statusBarColor: Colors.transparent,
+                ),
+                // scrolledUnderElevation: 0,
               ),
-            ),
-          ),
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.red,
-            brightness: Brightness.dark,
-            surface: Colors.grey[800],
-          ),
-          popupMenuTheme: const PopupMenuThemeData(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-            ),
-          ),
-          outlinedButtonTheme: OutlinedButtonThemeData(
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size.fromHeight(52),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(24),
+              inputDecorationTheme: const InputDecorationTheme(
+                filled: false,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(24),
+                  ),
                 ),
               ),
-              textStyle: const TextStyle(
-                fontSize: 16,
-              ),
-            ),
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(52),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(24),
+              canvasColor: dark?.background,
+              colorScheme: dark?.copyWith(
+                    surface: dark.surfaceVariant,
+                  ) ??
+                  ColorScheme.fromSeed(
+                    seedColor: Colors.red,
+                    brightness: Brightness.dark,
+                    surface: Colors.grey[800],
+                  ),
+              popupMenuTheme: const PopupMenuThemeData(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
               ),
-              textStyle: const TextStyle(
-                fontSize: 16,
+              outlinedButtonTheme: OutlinedButtonThemeData(
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(52),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(24),
+                    ),
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(52),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(24),
+                    ),
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-        initialRoute: '/',
-        routes: {
-          '/': (context) => const MainScreen(),
-          '/auth': (context) => const AuthScreen(),
-        },
-        onGenerateRoute: (settings) {
-          if (settings.name == '/detailed') {
-            final position = settings.arguments as int;
-            return MaterialPageRoute(
-              builder: (context) => AccountScreen(position: position),
-            );
-          }
-        },
-        builder: (context, child) {
-          return AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle(
-              systemNavigationBarColor: Colors.grey.shade900,
-              systemNavigationBarIconBrightness: Brightness.light,
-              systemNavigationBarDividerColor: Colors.grey.shade900,
-            ),
-            child: child!,
+            initialRoute: '/',
+            routes: {
+              '/': (context) => const MainScreen(),
+              '/auth': (context) => const AuthScreen(),
+            },
+            onGenerateRoute: (settings) {
+              if (settings.name == '/detailed') {
+                final position = settings.arguments as int;
+                return MaterialPageRoute(
+                  builder: (context) => AccountScreen(position: position),
+                );
+              }
+            },
+            builder: (context, child) {
+              return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(
+                  systemNavigationBarColor: Colors.grey.shade900,
+                  systemNavigationBarIconBrightness: Brightness.light,
+                  systemNavigationBarDividerColor: Colors.grey.shade900,
+                ),
+                child: child!,
+              );
+            },
           );
         },
       ),
