@@ -28,7 +28,8 @@ flutter_icons:
   android: true
   ios: true
   image_path: "icon/antassistant-icon.png"
-  image_path_android: "icon/antassistant-icon-foreground.png"
+  adaptive_icon_foreground: "icon/antassistant-icon-foreground.png"
+  adaptive_icon_background: "#fafafa"
 
 flutter:
   uses-material-design: true
